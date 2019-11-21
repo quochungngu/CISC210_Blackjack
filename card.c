@@ -54,6 +54,8 @@ void destroy_deck(card *deck){
 		current = next;
 		next = current->next;
 	}
+	
+	free(current);
 }
 
 /* counts the number of cards in the list headed by "deck" */
@@ -108,4 +110,24 @@ card *deal(card *deck){
 	card *drawn = next;
 	current->next = 0;
 	return drawn;
+}
+
+int total(card *hand){
+	int sum = 0;
+	card *current = hand;
+
+	while (current != 0){
+		int score;
+
+		if(current->rank >= 10){
+			score = 10;
+		} else {
+			score = current->rank;
+		}
+
+		sum += score;
+		current = current->next;
+	}
+
+	return sum;
 }
