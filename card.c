@@ -45,6 +45,16 @@ card *make_deck(){
 	return first;
 }
 
+void destroy_deck(card *deck){
+	card *current = deck;
+	card *next = current->next;
+	
+	while(next != 0){
+		free(current);
+		current = next;
+		next = current->next;
+	}
+}
 
 /* counts the number of cards in the list headed by "deck" */
 int count_deck(card *deck) {
