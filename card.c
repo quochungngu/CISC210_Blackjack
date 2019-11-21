@@ -95,3 +95,17 @@ card *shuffle(card *deck) {
     }
     return retdeck;
 }
+
+card *deal(card *deck){
+	card *current = deck;
+	card *next = current->next;
+
+	while(next->next != 0){
+		current = next;
+		next = current->next;
+	}
+	
+	card *drawn = next;
+	current->next = 0;
+	return drawn;
+}
