@@ -8,3 +8,11 @@ typedef struct Card {
 } card;
 
 /* Prototype all functions below:*/
+
+card *make_deck();
+int count_deck(card *deck);
+void destroy_deck(*card deck);
+card *shuffle(card *deck);
+card *deal(card *deck);
+int total(card* hand);
+void show(card* hand);

@@ -13,6 +13,39 @@
 */
 #include "card.h"
 
+card *make_deck(){
+	card *first = (card *) malloc(sizeof(card));
+	first->rank = 1;
+	first->suit = C;
+	
+	card *current = first;
+	for(int rank=2;rank<14;rank++){
+		card *newCard = (card *) malloc(sizeof(card));
+		newCard->rank = rank;
+		newCard->suit = C;
+
+		current->next = newCard;
+		current = newCard;
+	}
+
+	char suit[3] = "DHS";
+	for(int i=0;i<strlen(suit);i++){
+		for(int rank=1;rank<14;rank++) {
+			card *newCard = (card *) malloc(sizeof(card));
+			newCard->rank = rank;
+			newCard->suit = suit[i];
+
+			current->next = newCard;
+			current = newCard;
+		}
+	}
+
+	current->next = 0;
+
+	return first;
+}
+
+
 /* counts the number of cards in the list headed by "deck" */
 int count_deck(card *deck) {
     int count=0;
