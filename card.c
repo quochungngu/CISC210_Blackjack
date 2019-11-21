@@ -131,3 +131,14 @@ int total(card *hand){
 
 	return sum;
 }
+
+void show(card *hand){
+	card *current = hand;
+
+	while(current != 0) {
+		printf("%d%c ",current->rank,current->suit);
+		current = current->next;
+	}
+
+	printf("\n");
+}
