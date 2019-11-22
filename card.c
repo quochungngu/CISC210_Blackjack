@@ -46,16 +46,20 @@ card *make_deck(){
 }
 
 void destroy_deck(card *deck){
-	card *current = deck;
-	card *next = current->next;
+	if(deck) {
+		card *current = deck;
+		card *next = current->next;
 	
-	while(next != 0){
+		while(next){
+			free(current);
+			current = next;
+			next = current->next;
+		}
+	
 		free(current);
-		current = next;
-		next = current->next;
+	} else {
+		printf("\nDeck is empty\n");
 	}
-	
-	free(current);
 }
 
 /* counts the number of cards in the list headed by "deck" */
@@ -99,16 +103,25 @@ card *shuffle(card *deck) {
 }
 
 card *deal(card *deck){
-	card *current = deck;
-	card *next = current->next;
+	card *drawn = 0;
 
-	while(next->next != 0){
-		current = next;
-		next = current->next;
-	}
+	if (count_deck(deck)){
+		card *current = deck;
+		card *next = current->next;
+
+		while(next->next != 0){
+			current = next;
+			next = current->next;
+		}
 	
-	card *drawn = next;
-	current->next = 0;
+		drawn = next;
+		current->next = 0;
+	
+		printf("%d%c\n",drawn->rank,drawn->suit);
+	} else {
+		printf("No more cards in the deck.\n");
+	}
+
 	return drawn;
 }
 
@@ -116,7 +129,7 @@ int total(card *hand){
 	int sum = 0;
 	card *current = hand;
 
-	while (current != 0){
+	while (current){
 		int score;
 
 		if(current->rank >= 10){
@@ -135,7 +148,7 @@ int total(card *hand){
 void show(card *hand){
 	card *current = hand;
 
-	while(current != 0) {
+	while(current) {
 		printf("%d%c ",current->rank,current->suit);
 		current = current->next;
 	}
