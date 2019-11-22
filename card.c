@@ -16,13 +16,13 @@
 card *make_deck(){
 	card *first = (card *) malloc(sizeof(card));
 	first->rank = 1;
-	first->suit = C;
+	first->suit = 'C';
 	
 	card *current = first;
 	for(int rank=2;rank<14;rank++){
 		card *newCard = (card *) malloc(sizeof(card));
 		newCard->rank = rank;
-		newCard->suit = C;
+		newCard->suit = 'C';
 
 		current->next = newCard;
 		current = newCard;
@@ -57,8 +57,9 @@ void destroy_deck(card *deck){
 		}
 	
 		free(current);
+		printf("Cards have been destroyed.\n");
 	} else {
-		printf("\nDeck is empty\n");
+		printf("Deck is already empty and can't be destroyed.\n");
 	}
 }
 
@@ -117,7 +118,7 @@ card *deal(card *deck){
 		drawn = next;
 		current->next = 0;
 	
-		printf("%d%c\n",drawn->rank,drawn->suit);
+		printf("Dealt %d%c\n",drawn->rank,drawn->suit);
 	} else {
 		printf("No more cards in the deck.\n");
 	}

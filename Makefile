@@ -9,10 +9,11 @@ all: blackjack
 blackjack: game.o card.o
 	cc -o blackjack game.o card.o
 game.o:
-	cc -c main.c
+	cc -c game.c
 card.o:
-	cc -c card.o
+	cc -c card.c
 clean:
 	rm -f *.o blackjack
 run:
 	./blackjack
+test: clean all run
