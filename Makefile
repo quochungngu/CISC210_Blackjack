@@ -5,15 +5,15 @@
 # A rule for "clean" to remove all .o files
 
 
-all: blackjack
-blackjack: game.o card.o
-	cc -o blackjack game.o card.o
+all: game
+game: game.o card.o
+	cc -o game game.o card.o
 game.o:
 	cc -c game.c
 card.o:
 	cc -c card.c
 clean:
-	rm -f *.o blackjack
+	rm -f *.o game
 run:
-	./blackjack
+	./game
 test: clean all run
