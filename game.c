@@ -5,9 +5,12 @@
  /* 15 points */
 
 #include "card.h"
+#include <unistd.h>
+
+// The time the system sleeps to allow player to read text
+#define TRANSITION_TIME 1.5
 
 void printScore(card *hand);
-//card *getLastNode(card *hand);
 void printDemarcation(char demarker,int numStars, char *string);
 
 int main(void) {
@@ -15,6 +18,7 @@ int main(void) {
 
 	// playGame controls is the outermost gameplay loop
 	// Each loop in the outermost gameplay loop represents 1 round of blackjack
+	printDemarcation('=',20,"Game Start!");
 	int playGame = 1;
 	while(playGame){
 		
@@ -37,6 +41,8 @@ int main(void) {
 		show(player);
 		printScore(player);
 		
+		sleep(TRANSITION_TIME);
+
 		// playerTurn controls the player's turn loop
 		// The player's turn loop ends when the player stands, the player's hand exceeds 21, or the deck is empty
 		int playerTurn = 1;
@@ -50,16 +56,24 @@ int main(void) {
 			// Or "s", "S", "stand", or "Stand" to stand and end their turn
 			while(!validResponse){
 				
-				// Scanning player response
+				// Scanning player response and then clear stdin
 				printf("\nHit or stand?:\n");
 				scanf("%s",response);
-				
+				while((getchar()) != '\n');
+					
 				// Either hit, stand, or force player to input another response based on what their response was
 				if(!strcmp("h",response) || !strcmp("H",response) || !strcmp("hit",response) || !strcmp("Hit",response)){
 					validResponse = 1;
 					
 					// Deals a card to the player's hand
 					card *dealtCard = deal(deck);
+					
+					//Check if the dealtCard is the same card as the head of the deck
+					//If it is, then the last card has been drawn so we set deck to 0
+					if(deck == dealtCard) {
+						deck = 0;
+					}
+
 					dealtCard->next = player;
 					player = dealtCard;
 					
@@ -79,17 +93,26 @@ int main(void) {
 			// Print their hand and score every time they hit a card
 			printDemarcation('*',10,"Your Hand");
 			show(player);
-			printScore(player);	
+			printScore(player);
+
+			sleep(TRANSITION_TIME);
 		}
 		printDemarcation('=',20,"Your Turn End");
 		
-		// Start dealer's turn or skip dealer's turn if player already lost having a hand score over 21.
+		// Start dealer's turn or skip dealer's turn if player already lost by having a hand score over 21.
 		int playerWin = 0;
 		if (total(player) <= 21) {
 			printDemarcation('=',20,"Dealer's Turn");
 			// Deal cards to the dealer until their score is 17 or higher
 			while(total(dealer) < 16  && deck) {
 				card *dealtCard = deal(deck);
+
+				// Check if the dealtCard is the same card as the head of the deck
+				// If it is, then the last card has been drawn so we set deck to 0
+				if(deck == dealtCard) {
+					deck = 0;
+				}
+
 				dealtCard->next = dealer;
 				dealer = dealtCard;
 			}
@@ -109,6 +132,8 @@ int main(void) {
 			playerWin = -1;
 		}
 		
+		sleep(TRANSITION_TIME);
+
 		// Print player and dealer's hands and score at the end of round
 		printDemarcation('=',20,"Scoreboard");
 		printDemarcation('*',10,"Your Hand");
@@ -134,10 +159,17 @@ int main(void) {
 		destroy_deck(player);
 		destroy_deck(dealer);
 		
-		// Ask if the player wants to quit or play another round
+		// These pointers are local, so they are  set to 0 after destroying linked list
+		// Otherwise count_deck always show 1
+		deck = 0;
+		player = 0;
+		dealer = 0;
+
+		// Ask if the player wants to quit or play another round, also clear stdin after getting response
 		printDemarcation('=',20,"Round Over!");
 		printf("Play again? Type 0 for no. Type anything else for yes.\n");
 		scanf("%d",&playGame);
+		while((getchar()) != '\n');
 		
 		if(playGame){
 			printDemarcation('=',20,"New Round!");
@@ -151,16 +183,6 @@ int main(void) {
 void printScore(card *hand){
 	printf("\tScore: %d\n",total(hand));
 }
-
-// card *getLastNode(card *hand) {
-	// card *current = hand;
-
-	// while(current->next){
-		// current = current->next;
-	// }
-
-	// return current;
-// }
 
 // Prints a line with "numTimes" of the "demarker" before and after the "string"
 void printDemarcation(char demarker,int numTimes,char* string) {

@@ -59,12 +59,14 @@ void destroy_deck(card *deck){
 		
 		while(next){
 			free(current);
+			current->next = 0;
 			current = next;
 			next = current->next;
 		}
 	
 		free(current);
-		printf("Collection of cards has been destroyed.\n");
+		current->next = 0;
+		//printf("Collection of cards has been destroyed.\n");
 	} else {
 		printf("Deck is already empty and can't be destroyed.\n");
 	}
@@ -118,18 +120,22 @@ card *deal(card *deck){
 		card *current = deck;
 		card *next = current->next;
 		
-		// Cycle through linked list until current is the card before the last card
-		// and next is the last card
-		while(next->next){
-			current = next;
-			next = current->next;
-		}
-		
-		// The drawn card is the card located in "next"
-		// The card before the last card located at "current" becomes the new last card
-		drawn = next;
-		current->next = 0;
-	
+		// Checks if there is only 1 card left in deck
+		if (next) {
+			// Cycle through linked list until current is the card before the last card
+			// and next is the last card
+			while(next->next){
+				current = next;
+				next = current->next;
+			}
+
+			// The drawn card is the card located at "next"
+			// The card before the last card located at "current" becomes the new last card
+			drawn = next;
+			current->next = 0;
+		} else {
+			drawn = current;
+		}	
 		printf("Dealt %d%c\n",drawn->rank,drawn->suit);
 	} else {
 		printf("No more cards in the deck.\n");
