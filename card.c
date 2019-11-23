@@ -13,11 +13,15 @@
 */
 #include "card.h"
 
+// Makes a linked list of 52 cards
 card *make_deck(){
+	// Initializing the first card in deck as One of Clubs
+	// "first" will be the head of the linked list of cards
 	card *first = (card *) malloc(sizeof(card));
 	first->rank = 1;
 	first->suit = 'C';
 	
+	// Making rest of the cards in Clubs
 	card *current = first;
 	for(int rank=2;rank<14;rank++){
 		card *newCard = (card *) malloc(sizeof(card));
@@ -27,7 +31,8 @@ card *make_deck(){
 		current->next = newCard;
 		current = newCard;
 	}
-
+	
+	// Making all cards in Diamond, Hearts, and Spades.
 	char suit[3] = "DHS";
 	for(int i=0;i<strlen(suit);i++){
 		for(int rank=1;rank<14;rank++) {
@@ -39,17 +44,19 @@ card *make_deck(){
 			current = newCard;
 		}
 	}
-
+	
+	// Mark the last card as last by setting its next to 0;
 	current->next = 0;
-
+	
 	return first;
 }
 
+// Tranverses through a linked list of cards and frees every node
 void destroy_deck(card *deck){
 	if(deck) {
 		card *current = deck;
 		card *next = current->next;
-	
+		
 		while(next){
 			free(current);
 			current = next;
@@ -57,7 +64,7 @@ void destroy_deck(card *deck){
 		}
 	
 		free(current);
-		printf("Cards have been destroyed.\n");
+		printf("Collection of cards has been destroyed.\n");
 	} else {
 		printf("Deck is already empty and can't be destroyed.\n");
 	}
@@ -103,18 +110,23 @@ card *shuffle(card *deck) {
     return retdeck;
 }
 
+// Removes the last card in the linked list of cards and prints its rank and suit and returns it
 card *deal(card *deck){
 	card *drawn = 0;
 
-	if (count_deck(deck)){
+	if (deck){
 		card *current = deck;
 		card *next = current->next;
-
-		while(next->next != 0){
+		
+		// Cycle through linked list until current is the card before the last card
+		// and next is the last card
+		while(next->next){
 			current = next;
 			next = current->next;
 		}
-	
+		
+		// The drawn card is the card located in "next"
+		// The card before the last card located at "current" becomes the new last card
 		drawn = next;
 		current->next = 0;
 	
@@ -126,19 +138,23 @@ card *deal(card *deck){
 	return drawn;
 }
 
+// Cycles through a linked list of cards and sums up the score of their ranks
+// Ranks 10 to 13, inclusive, are 10; Ranks 1 to 9, inclusive, are worth their rank number
 int total(card *hand){
 	int sum = 0;
 	card *current = hand;
-
+	
 	while (current){
 		int score;
-
+		
+		// Score each card based on their rank
 		if(current->rank >= 10){
 			score = 10;
 		} else {
 			score = current->rank;
 		}
-
+		
+		// Add score to total sum and then cycle to the next card
 		sum += score;
 		current = current->next;
 	}
@@ -146,9 +162,11 @@ int total(card *hand){
 	return sum;
 }
 
+// Prints all the ranks and suits of the cards in a linked list of cards on a single line
 void show(card *hand){
 	card *current = hand;
-
+	
+	// Cycle through entire linked list and print their rank and then suit
 	while(current) {
 		printf("%d%c ",current->rank,current->suit);
 		current = current->next;
